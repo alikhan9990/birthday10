@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Surprise 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at top, #ffb3d9, #ff5fa2, #7a003c);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* START BOX */
+    .start-box {
+      text-align: center;
+      animation: fade 1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .start-box h1 {
+      color: white;
+      font-size: 28px;
+      margin-bottom: 25px;
+      animation: breatheText 2.2s infinite ease-in-out;
+      display: inline-block;
+      text-align: center;
+      width: 100%;
+      text-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+
+    @keyframes breatheText {
+      0%, 100% { 
+        transform: scale(1); 
+        text-shadow: 0 0 5px rgba(255,255,255,0.3);
+      }
+      50% { 
+        transform: scale(1.03); 
+        text-shadow: 0 0 15px rgba(255,105,180,0.3);
+      }
+    }
+
+    .get-btn {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: white;
+      padding: 14px 38px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 12px 30px rgba(255,77,109,0.5);
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      outline: none;
+      -webkit-appearance: none;
+      animation: breatheBtn 2.2s infinite ease-in-out;
+      margin: 0 auto;
+      touch-action: manipulation;
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    /* ===== CARD STYLING - NO OVAL SHAPE ===== */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      width: min(85%, 320px);
+      padding: 25px 20px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.15),
+        0 0 0 1px rgba(255,255,255,0.5),
+        0 0 20px rgba(255,105,180,0.3);
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      margin: 0 auto;
+      /* REMOVED ALL PSEUDO-ELEMENTS THAT WERE CREATING OVAL SHAPE */
+    }
+
+    /* NO BEFORE OR AFTER ELEMENTS - OVAL SHAPE HATAYA */
+
+    .sparkle {
+      font-size: 28px;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
+      animation: sparkleFloat 2s infinite ease-in-out;
+      display: inline-block;
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(3deg); }
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #2d1b3a;
+      margin-bottom: 8px;
+      animation: breatheText 2.5s infinite ease-in-out;
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      font-weight: 600;
+      line-height: 1.4;
+      padding: 0 5px;
+    }
+
+    /* NO MESSAGE - REMOVED BACKGROUND OVAL */
+    #noMsg {
+      font-size: 12px;
+      color: #ff4d6d;
+      min-height: 16px;
+      margin: 5px 0 10px;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
+      /* REMOVED BACKGROUND AND BORDER RADIUS THAT WAS CREATING OVAL */
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      display: block;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btns {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    button, .get-btn {
+      border: none;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      outline: none;
+      -webkit-appearance: none;
+      touch-action: manipulation;
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1),
+                  box-shadow 0.3s ease;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    button.pressed, .get-btn.pressed {
+      transform: scale(0.95) !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: transform 0.1s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .yes {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      padding: 8px 24px;
+      min-width: 90px;
+    }
+
+    .no {
+      background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+      padding: 8px 24px;
+      min-width: 90px;
+    }
+
+    .get-btn, #goBtn {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      padding: 10px 30px;
+      font-size: 15px;
+      min-width: 160px;
+      margin: 5px auto 0;
+      display: inline-block;
+    }
+
+    /* Shine effect */
+    .yes::before, .no::before, .get-btn::before, #goBtn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 150%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        rgba(255, 255, 255, 0.8), 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+      animation: shine 3s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -150%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes breatheBtn {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 12px 30px rgba(255,77,109,0.4);
+      }
+      50% { 
+        transform: scale(1.04); 
+        box-shadow: 0 18px 40px rgba(255,77,109,0.6);
+      }
+    }
+
+    .get-btn, #goBtn {
+      animation: breatheBtn 2.5s infinite ease-in-out;
+    }
+
+    .yes, .no {
+      animation: breatheBtn 2.5s infinite ease-in-out;
+    }
+
+    /* Progress Dots - SIMPLE */
+    .dots {
+      margin-top: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .dots span {
+      width: 6px;
+      height: 6px;
+      background: rgba(216,75,99,0.2);
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 4px;
+      transition: all 0.3s ease;
+    }
+
+    .dots .active {
+      background: #d84b63;
+      transform: scale(1.2);
+      box-shadow: 0 0 8px rgba(216,75,99,0.6);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .start-box h1 {
+        font-size: 24px;
+      }
+      
+      .get-btn {
+        padding: 12px 32px;
+        font-size: 15px;
+      }
+      
+      .card {
+        width: min(90%, 300px);
+        padding: 20px 15px;
+      }
+      
+      h2 {
+        font-size: 16px;
+      }
+      
+      .yes, .no {
+        padding: 7px 20px;
+        min-width: 80px;
+        font-size: 13px;
+      }
+      
+      .get-btn, #goBtn {
+        padding: 9px 25px;
+        font-size: 14px;
+        min-width: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<main class="container">
+
+  <!-- START -->
+  <div id="startBox" class="start-box">
+    <h1>Are you ready for surprise?</h1>
+    <div class="get-btn" id="getSurpriseBtn">Get Surprise</div>
+  </div>
+
+  <!-- QUESTIONS - NO OVAL SHAPE -->
+  <div id="questionBox" class="card hidden">
+    <div class="sparkle">✨</div>
+
+    <h2 id="questionText"></h2>
+    <p id="noMsg"></p>
+
+    <!-- YES / NO -->
+    <div class="btns" id="yesNoBtns">
+      <button class="yes" id="yesBtn">Yes</button>
+      <button class="no" id="noBtn">No</button>
+    </div>
+
+    <!-- LET'S GO -->
+    <button id="goBtn">
+      Let's go
+    </button>
+
+    <!-- SIMPLE DOTS -->
+    <div class="dots">
+      <span class="active"></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  (function() {
+    const startBox = document.getElementById("startBox");
+    const questionBox = document.getElementById("questionBox");
+    const questionText = document.getElementById("questionText");
+    const noMsg = document.getElementById("noMsg");
+    const dots = document.querySelectorAll(".dots span");
+    const yesNoBtns = document.getElementById("yesNoBtns");
+    const goBtn = document.getElementById("goBtn");
+    
+    const getSurpriseBtn = document.getElementById("getSurpriseBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+
+    let index = 0;
+
+    const questions = [
+      "Do you wanna see what I made 👀?",
+      "Are you really excited for your surprise 🙄?",
+      "ok so let's celebrate your pre birthday 💗"
+    ];
+
+    const noTexts = [
+      "Aww 🥺 bohot mehnat se banaya hai…",
+      "Please 💖 ek baar dekh lo na…"
+    ];
+
+    function addPressEffect(element) {
+      if (!element) return;
+      
+      element.addEventListener('mousedown', () => {
+        element.classList.add('pressed');
+      });
+
+      element.addEventListener('mouseup', () => {
+        element.classList.remove('pressed');
+      });
+
+      element.addEventListener('mouseleave', () => {
+        element.classList.remove('pressed');
+      });
+
+      element.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        element.classList.add('pressed');
+      });
+
+      element.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        element.classList.remove('pressed');
+      });
+
+      element.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        element.classList.remove('pressed');
+      });
+    }
+
+    addPressEffect(getSurpriseBtn);
+    addPressEffect(yesBtn);
+    addPressEffect(noBtn);
+    addPressEffect(goBtn);
+
+    if (getSurpriseBtn) {
+      getSurpriseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startSurprise();
+      });
+      
+      getSurpriseBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        startSurprise();
+      });
+    }
+
+    if (yesBtn) {
+      yesBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        yesClick();
+      });
+      
+      yesBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        yesClick();
+      });
+    }
+
+    if (noBtn) {
+      noBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        noClick();
+      });
+      
+      noBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        noClick();
+      });
+    }
+
+    if (goBtn) {
+      goBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        goNext();
+      });
+      
+      goBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        goNext();
+      });
+    }
+
+    document.addEventListener('touchstart', function(e) {
+      if (e.target.tagName === 'BUTTON' || e.target.classList.contains('get-btn')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    function startSurprise() {
+      startBox.style.display = "none";
+      questionBox.classList.remove("hidden");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      questionText.textContent = questions[index];
+      noMsg.textContent = "";
+
+      dots.forEach((d, i) => {
+        d.classList.toggle("active", i === index);
+      });
+
+      if (index === questions.length - 1) {
+        yesNoBtns.style.display = "none";
+        goBtn.style.display = "inline-block";
+      } else {
+        yesNoBtns.style.display = "flex";
+        goBtn.style.display = "none";
+      }
+    }
+
+    function yesClick() {
+      if (index < questions.length - 1) {
+        index++;
+        loadQuestion();
+      }
+    }
+
+    function noClick() {
+      noMsg.textContent = noTexts[index] || "";
+    }
+
+    function goNext() {
+      window.location.href = "page3.html";
+    }
+
+    /* BACKGROUND HEARTS + STARS */
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const particles = [];
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 8 + 3;
+        this.speed = Math.random() * 0.5 + 0.25;
+        this.type = Math.random() > 0.7 ? "heart" : "star";
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+      
+      draw() {
+        ctx.save();
+        ctx.shadowColor = "rgba(255, 182, 213, 0.8)";
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = "rgba(255, 200, 230, 0.9)";
+        ctx.beginPath();
+        
+        if (this.type === "heart") {
+          ctx.moveTo(this.x, this.y);
+          ctx.bezierCurveTo(
+            this.x - 5, this.y - 5,
+            this.x - 10, this.y + 5,
+            this.x, this.y + 12
+          );
+          ctx.bezierCurveTo(
+            this.x + 10, this.y + 5,
+            this.x + 5, this.y - 5,
+            this.x, this.y
+          );
+        } else {
+          ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+        }
+        
+        ctx.fill();
+        ctx.restore();
+      }
+      
+      update() {
+        this.y -= this.speed;
+        if (this.y < -20) {
+          this.reset();
+          this.y = canvas.height + 20;
+        }
+        this.draw();
+      }
+    }
+
+    for (let i = 0; i < 120; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => p.update());
+      requestAnimationFrame(animateHearts);
+    }
+    animateHearts();
+
+  })();
+</script>
+
+<!-- 
+  Changed "Shahima" to "Ramsha" in the birthday message.
+  The third question now says: "ok so let's celebrate your birthday 💗 Happy Birthday Ramsha 🎂"
+-->
+
+</body>
+</html>

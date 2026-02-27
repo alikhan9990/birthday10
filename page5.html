@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .page5 {
+            width: 100%;
+            height: 100vh;
+            background-image: url('bgcolor - Copy.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+            position: relative;
+            margin-bottom: 80px; /* Video ke neeche space for button */
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .play-btn {
+            position: absolute;
+            bottom: -60px; /* Video se 60px neeche */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            font-size: 18px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .play-btn:hover {
+            background: #cc0000;
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .play-btn.hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="page5">
+        <div class="video-container">
+            <!-- Video muted hai aur pause hai -->
+            <video id="myVideo" muted loop playsinline>
+                <source src="heredits.mp4
+    " type="video/mp4">
+            </video>
+            
+            <!-- Play button video ke niche -->
+            <button id="playBtn" class="play-btn">▶ Play</button>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('myVideo');
+        const playBtn = document.getElementById('playBtn');
+
+        // Button click pe
+        playBtn.addEventListener('click', function() {
+            // Video unmute karo
+            video.muted = false;
+            
+            // Video play karo
+            video.play();
+            
+            // Button chhupa do
+            this.classList.add('hide');
+        });
+
+        // Jab video complete ho jaye
+        video.addEventListener('ended', function() {
+            // Video ko restart karo
+            this.currentTime = 0;
+            
+            // Video ko mute karo (taaki agli baar bina sound ke ho)
+            this.muted = true;
+            
+            // Button wapas dikhao
+            playBtn.classList.remove('hide');
+        });
+
+        // Agar video manually pause kare to bhi button dikh jayega
+        video.addEventListener('pause', function() {
+            if (this.currentTime < this.duration) {
+                playBtn.classList.remove('hide');
+            }
+        });
+
+        // Agar video play ho to button hide
+        video.addEventListener('play', function() {
+            playBtn.classList.add('hide');
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💖 Just Wait 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -khtml-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      outline: none !important;
+    }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at top, #ffb3d9, #ff5fa2, #7a003c);
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .title {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(44px, 7vw, 80px);
+      margin-bottom: 50px;
+      animation: breatheText 3s infinite ease-in-out;
+      text-shadow: 0 0 5px rgba(255,255,255,0.3);
+      pointer-events: none;
+    }
+
+    @keyframes breatheText {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .countdown {
+      display: flex;
+      gap: 22px;
+    }
+
+    /* ===== SIDE ENTRANCE ANIMATIONS ===== */
+    @keyframes poppinsSlideLeft {
+      0% { 
+        opacity: 0; 
+        transform: translateX(-100px);
+        filter: blur(5px);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateX(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes poppinsSlideRight {
+      0% { 
+        opacity: 0; 
+        transform: translateX(100px);
+        filter: blur(5px);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateX(0);
+        filter: blur(0);
+      }
+    }
+
+    /* Apply animations to countdown boxes */
+    .time-box:nth-child(1) { 
+      animation: poppinsSlideLeft 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation-delay: 0.3s;
+      opacity: 0; 
+    }
+    .time-box:nth-child(2) { 
+      animation: poppinsSlideLeft 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation-delay: 0.5s;
+      opacity: 0;
+    }
+    .time-box:nth-child(3) { 
+      animation: poppinsSlideRight 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation-delay: 0.7s;
+      opacity: 0;
+    }
+    .time-box:nth-child(4) { 
+      animation: poppinsSlideRight 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation-delay: 0.9s;
+      opacity: 0;
+    }
+
+    .time-box {
+      min-width: 85px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none;
+    }
+
+    .time-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -200%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        rgba(255, 255, 255, 0.7), 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+      animation: shine 3s infinite linear;
+    }
+
+    @keyframes shine {
+      0% { left: -200%; }
+      100% { left: 100%; }
+    }
+
+    .time-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .time-box span {
+      font-size: clamp(26px, 5vw, 42px);
+      font-family: 'Playfair Display', serif;
+      display: block;
+      position: relative;
+      z-index: 2;
+    }
+
+    .time-box small {
+      font-size: 12px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== BUTTON WITH SMOOTH PRESS EFFECT + SIDE ENTRANCE ===== */
+    .surprise-btn {
+      margin-top: 50px;
+      font-size: clamp(16px, 3vw, 20px);
+      text-decoration: none;
+      color: #fff;
+      padding: 14px 34px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), 
+                  box-shadow 0.3s ease,
+                  background 0.3s ease;
+      display: inline-block;
+      border: none;
+      cursor: pointer;
+      /* Remove default breathe animation to avoid conflict, add side entrance */
+      /* animation: breatheBtn 2.5s infinite ease-in-out;  */ 
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      z-index: 100;
+      pointer-events: auto !important;
+      will-change: transform;
+      
+      /* ---- Side entrance animation for button ---- */
+      animation: poppinsSlideLeft 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation-delay: 1.1s; /* starts after boxes */
+      opacity: 0;
+    }
+
+    /* SMOOTH PRESS EFFECT */
+    .surprise-btn.pressed {
+      transform: scale(0.95) !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.1s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .surprise-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -200%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.5), 
+        rgba(255, 255, 255, 0.9), 
+        rgba(255, 255, 255, 0.5), 
+        transparent);
+      animation: shine 2.5s infinite linear;
+      pointer-events: none;
+    }
+
+    /* Button breathing animation (re-added gently after entrance) */
+    .surprise-btn {
+      animation: poppinsSlideLeft 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) forwards, 
+                 breatheBtn 2.5s infinite ease-in-out 1.5s; /* starts after entrance */
+    }
+
+    @keyframes breatheBtn {
+      0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 5px 15px rgba(255,77,109,0.3);
+      }
+      50% { 
+        transform: scale(1.03); 
+        box-shadow: 0 12px 25px rgba(255,77,109,0.5);
+      }
+    }
+
+    .warning-message {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: white;
+      padding: 15px 35px;
+      border-radius: 50px;
+      font-size: 20px;
+      font-weight: 600;
+      z-index: 1000;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 30px rgba(255, 77, 109, 0.5);
+      animation: popIn 0.3s ease;
+      pointer-events: none;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .shake {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .countdown { gap: 12px; }
+      .time-box { min-width: 65px; padding: 14px; }
+      .time-box span { font-size: 24px; }
+      .time-box small { font-size: 10px; }
+      .warning-message { font-size: 16px; padding: 12px 25px; width: 90%; }
+      .title { font-size: 40px; }
+      .surprise-btn { 
+        padding: 14px 32px; 
+        font-size: 16px; 
+        min-width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <main class="container">
+    <h1 class="title">Something special is coming…</h1>
+
+    <div class="countdown">
+      <div class="time-box"><span id="days">00</span><small>Days</small></div>
+      <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
+      <div class="time-box"><span id="minutes">00</span><small>Minutes</small></div>
+      <div class="time-box"><span id="seconds">00</span><small>Seconds</small></div>
+    </div>
+
+    <button id="nextPageBtn" class="surprise-btn">Get your Surprise</button>
+  </main>
+
+  <script>
+    (function() {
+      const nextPageBtn = document.getElementById("nextPageBtn");
+      const daysEl = document.getElementById("days");
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
+      
+      let timeUp = false;
+      let previousSeconds = -1;
+
+ const targetDate = Date.now() + (30 * 1000); // 30 seconds from current time
+
+      function showWarningMessage() {
+        const existingWarning = document.querySelector('.warning-message');
+        if (existingWarning) existingWarning.remove();
+
+        const warning = document.createElement('div');
+        warning.className = 'warning-message';
+        warning.textContent = '⏳ Ruko Jara.. Sabr Kro 💖';
+        
+        document.body.appendChild(warning);
+
+        setTimeout(() => {
+          warning.style.animation = 'popIn 0.3s ease reverse';
+          setTimeout(() => warning.remove(), 300);
+        }, 2500);
+      }
+
+      // ===== SMOOTH PRESS EFFECT =====
+      function addPressEffect(button) {
+        // Mouse events for laptop
+        button.addEventListener('mousedown', () => {
+          button.classList.add('pressed');
+        });
+
+        button.addEventListener('mouseup', () => {
+          button.classList.remove('pressed');
+        });
+
+        button.addEventListener('mouseleave', () => {
+          button.classList.remove('pressed');
+        });
+
+        // Touch events for mobile
+        button.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          button.classList.add('pressed');
+        });
+
+        button.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          button.classList.remove('pressed');
+        });
+
+        button.addEventListener('touchcancel', (e) => {
+          e.preventDefault();
+          button.classList.remove('pressed');
+        });
+      }
+
+      // Apply press effect
+      addPressEffect(nextPageBtn);
+
+      // ===== CLICK HANDLER =====
+      function handleButtonClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (!timeUp) {
+          // Shake button
+          nextPageBtn.classList.add('shake');
+          setTimeout(() => nextPageBtn.classList.remove('shake'), 400);
+          
+          showWarningMessage();
+          
+          document.querySelectorAll('.time-box').forEach(box => {
+            box.style.backgroundColor = 'rgba(255, 100, 100, 0.3)';
+            setTimeout(() => box.style.backgroundColor = '', 400);
+          });
+        } else {
+          window.location.href = "page2.html";
+        }
+      }
+
+      // Add click handlers
+      nextPageBtn.addEventListener('click', handleButtonClick);
+      nextPageBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleButtonClick(e);
+      });
+
+      // Prevent default behaviors
+      nextPageBtn.addEventListener('mousedown', (e) => e.preventDefault());
+      nextPageBtn.addEventListener('mouseup', (e) => e.preventDefault());
+
+      // ===== COUNTDOWN =====
+      setInterval(() => {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = "00";
+          hoursEl.textContent = "00";
+          minutesEl.textContent = "00";
+          secondsEl.textContent = "00";
+          
+          if (!timeUp) {
+            timeUp = true;
+          }
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = String(days).padStart(2, "0");
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+
+        if (seconds !== previousSeconds) {
+          secondsEl.style.transform = 'scale(1.15)';
+          secondsEl.style.transition = 'transform 0.2s ease';
+          setTimeout(() => secondsEl.style.transform = 'scale(1)', 200);
+          previousSeconds = seconds;
+        }
+
+      }, 1000);
+
+      // ===== HEARTS BACKGROUND - NORMAL SAME SPEED =====
+      const canvas = document.getElementById("bgCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      
+      resize();
+      window.addEventListener("resize", resize);
+
+      const hearts = [];
+      const heartCount = 80;
+
+      class Heart {
+        constructor() {
+          this.reset();
+        }
+        
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 8 + 4;
+          // NORMAL SPEED - same for all devices
+          this.speed = 0.3 + (Math.random() * 0.2); // Range: 0.3 to 0.5
+          this.opacity = Math.random() * 0.4 + 0.3;
+        }
+
+        draw() {
+          ctx.save();
+          
+          ctx.shadowColor = "rgba(255, 200, 220, 0.5)";
+          ctx.shadowBlur = 6;
+          
+          ctx.globalAlpha = this.opacity;
+          ctx.fillStyle = "rgba(255, 200, 230, 0.9)";
+          ctx.beginPath();
+
+          ctx.moveTo(this.x, this.y);
+          ctx.bezierCurveTo(
+            this.x - this.size/2, this.y - this.size/2,
+            this.x - this.size, this.y + this.size/2,
+            this.x, this.y + this.size
+          );
+          ctx.bezierCurveTo(
+            this.x + this.size, this.y + this.size/2,
+            this.x + this.size/2, this.y - this.size/2,
+            this.x, this.y
+          );
+
+          ctx.fill();
+          ctx.restore();
+        }
+
+        update() {
+          this.y -= this.speed;
+          if (this.y < -50) {
+            this.reset();
+            this.y = canvas.height + 50;
+          }
+          this.draw();
+        }
+      }
+
+      for (let i = 0; i < heartCount; i++) {
+        hearts.push(new Heart());
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts.forEach(h => h.update());
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+    })();
+  </script>
+</body>
+</html>

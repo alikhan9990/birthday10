@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Enchanted Evening Sky ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100%;
+            background: #0a0015;
+        }
+
+        /* ========== ENHANCED ENCHANTED SKY BACKGROUND ========== */
+        .enchanted-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 40% 50%, #2d1b3a 0%, #12082b 40%, #030014 100%);
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .enchanted-sky::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255, 180, 200, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(200, 150, 255, 0.15) 0%, transparent 55%),
+                radial-gradient(circle at 80% 20%, rgba(255, 220, 150, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 20% 80%, rgba(255, 160, 190, 0.1) 0%, transparent 60%);
+            animation: nebulaDrift 20s infinite alternate ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes nebulaDrift {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+            50% { transform: scale(1.05) translate(-1%, 1%); opacity: 0.7; }
+            100% { transform: scale(1) translate(1%, -1%); opacity: 0.5; }
+        }
+
+        .stars-layer1, .stars-layer2, .stars-layer3, .sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .stars-layer1 {
+            background-image: radial-gradient(1px 1px at 5% 10%, #fff, transparent);
+            background-size: 250px 250px;
+            opacity: 0.7;
+            animation: twinkle 5s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .content {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .questions-container {
+            background: rgba(20, 5, 30, 0.35);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 35px;
+            width: 100%;
+            max-width: 650px;
+            border: 1px solid rgba(255, 215, 200, 0.25);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+
+        .questions-title {
+            text-align: center;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            text-shadow: 0 0 20px #ffb3ff;
+        }
+
+        .question-wrapper {
+            position: relative;
+            min-height: 280px;
+        }
+
+        .question-card {
+            background: rgba(30, 10, 40, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 35px;
+            border: 1px solid rgba(255, 200, 220, 0.35);
+            opacity: 0;
+            transform: translateX(40px) scale(0.92);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .question-card.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: all;
+            position: relative;
+        }
+
+        .question-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 35px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .options input[type="radio"] {
+            display: none;
+        }
+
+        .option-label {
+            padding: 16px 50px;
+            background: rgba(30, 10, 45, 0.9);
+            border: 2px solid #ffb3d9;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffe6f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            min-width: 140px;
+            text-align: center;
+            /* Mobile touch fixes */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Mobile active state */
+        .option-label:active {
+            background: #ff85b3 !important;
+            color: white !important;
+            border-color: white !important;
+            transform: scale(0.98);
+            box-shadow: 0 0 40px #ffb3d9;
+        }
+
+        /* Hover only for non-touch devices */
+        @media (hover: hover) {
+            .option-label:hover {
+                background: #ff85b3;
+                color: white;
+                border-color: white;
+                transform: scale(1.08);
+                box-shadow: 0 0 40px #ffb3d9;
+            }
+        }
+
+        input[type="radio"]:checked + .option-label {
+            background: #ff6b9d !important;
+            color: white !important;
+            border-color: white !important;
+            box-shadow: 0 0 40px #ffb3d9;
+            transform: scale(1.05);
+        }
+
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .progress-dot {
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+        }
+
+        .progress-dot.active {
+            background: #ffb3d9;
+            box-shadow: 0 0 30px #ffb3d9;
+            transform: scale(1.3);
+        }
+
+        .progress-dot.completed {
+            background: #ff85b3;
+            box-shadow: 0 0 20px #ff85b3;
+        }
+
+        .final-message-box {
+            background: rgba(30, 10, 45, 0.85);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 180, 210, 0.5);
+            border-radius: 30px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 133, 162, 0.4);
+        }
+
+        .final-message {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-shadow: 0 0 20px #ffb3ff;
+        }
+
+        .next-surprise-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #ff85a2, #ffb3d9);
+            border: none;
+            border-radius: 60px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 0 30px #ff85a2;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .next-surprise-btn:active {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, #ff6b8a, #ff9ec9);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .questions-container { padding: 20px; }
+            .question-text { font-size: 1.2rem; }
+            .option-label { 
+                padding: 18px 30px; 
+                font-size: 1.3rem;
+                min-width: 120px;
+            }
+            .questions-title { font-size: 1.8rem; }
+            .progress-dot { width: 16px; height: 16px; }
+            .next-surprise-btn { padding: 18px 40px; font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="enchanted-sky">
+        <div class="stars-layer1"></div>
+    </div>
+
+    <div class="content">
+        <div class="questions-container">
+            <h1 class="questions-title">✨Questions ✨</h1>
+            
+            <div class="question-wrapper">
+                <!-- Question 1 -->
+                <div class="question-card active" data-q="1">
+                    <div class="question-text">Do you like the website i made for you?</div>
+                    <div class="options">
+                        <input type="radio" name="q1" id="q1_yes" value="Yes">
+                        <label for="q1_yes" class="option-label">Yes</label>
+                        
+                        <input type="radio" name="q1" id="q1_no" value="No">
+                        <label for="q1_no" class="option-label">No</label>
+                    </div>
+                </div>
+                
+                <!-- Question 2 -->
+                <div class="question-card" data-q="2">
+                    <div class="question-text">After seeing this website, do you feel more interested in me?</div>
+                    <div class="options">
+                        <input type="radio" name="q2" id="q2_yes" value="Yes">
+                        <label for="q2_yes" class="option-label">Yes</label>
+                        
+                        <input type="radio" name="q2" id="q2_no" value="No">
+                        <label for="q2_no" class="option-label">No</label>
+                    </div>
+                </div>
+                
+                <!-- Question 3 -->
+                <div class="question-card" data-q="3">
+                    <div class="question-text">What you think about us, do you like me in a special way?</div>
+                    <div class="options">
+                        <input type="radio" name="q3" id="q3_yes" value="Yes">
+                        <label for="q3_yes" class="option-label">Yes</label>
+                        
+                        <input type="radio" name="q3" id="q3_no" value="No">
+                        <label for="q3_no" class="option-label">No</label>
+                    </div>
+                </div>
+                
+                <!-- Question 4 -->
+                <div class="question-card" data-q="4">
+                    <div class="question-text">Do you like when i do unexpected things like this website?</div>
+                    <div class="options">
+                        <input type="radio" name="q4" id="q4_yes" value="Yes">
+                        <label for="q4_yes" class="option-label">Yes</label>
+                        
+                        <input type="radio" name="q4" id="q4_no" value="No">
+                        <label for="q4_no" class="option-label">No</label>
+                    </div>
+                </div>
+                
+                <!-- Question 5 -->
+                <div class="question-card" data-q="5">
+                    <div class="question-text">Ok last question so, do you have feelings for me?</div>
+                    <div class="options">
+                        <input type="radio" name="q5" id="q5_yes" value="Yes">
+                        <label for="q5_yes" class="option-label">Yes</label>
+                        
+                        <input type="radio" name="q5" id="q5_no" value="No">
+                        <label for="q5_no" class="option-label">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress" id="progress">
+                <span class="progress-dot active"></span>
+                <span class="progress-dot"></span>
+                <span class="progress-dot"></span>
+                <span class="progress-dot"></span>
+                <span class="progress-dot"></span>
+            </div>
+            
+            <div id="finalSection" style="display: none;">
+                <div class="final-message-box">
+                    <div class="final-message">
+                        Happy Birthday in Advance! 🫶🏻💗
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="next-surprise-btn" id="nextSurpriseBtn">Next Surprise 🎁</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="answersForm" style="display: none;">
+        <input type="hidden" name="answers" id="answers-input">
+    </form>
+
+    <script>
+        // ========== SHOOTING STARS ==========
+        function createShootingStar() {
+            const sky = document.querySelector('.enchanted-sky');
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.cssText = `
+                position: absolute;
+                width: 150px;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, white, transparent);
+                left: ${Math.random() * 70}%;
+                top: ${Math.random() * 30}%;
+                transform: rotate(-25deg);
+                opacity: 1;
+                z-index: 6;
+                pointer-events: none;
+            `;
+            sky.appendChild(star);
+            
+            let start = null;
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = (timestamp - start) / 3000;
+                if (progress < 1) {
+                    star.style.transform = `rotate(-25deg) translate(${progress * 200}%, ${progress * 100}%)`;
+                    star.style.opacity = 1 - progress;
+                    requestAnimationFrame(animate);
+                } else {
+                    star.remove();
+                }
+            }
+            requestAnimationFrame(animate);
+            setTimeout(createShootingStar, Math.random() * 5000 + 2000);
+        }
+        setTimeout(createShootingStar, 1000);
+
+        // ========== QUESTION LOGIC ==========
+        const questionCards = document.querySelectorAll('.question-card');
+        const progressDots = document.querySelectorAll('.progress-dot');
+        const finalSection = document.getElementById('finalSection');
+        const nextSurpriseBtn = document.getElementById('nextSurpriseBtn');
+        const title = document.querySelector('.questions-title');
+        const wrapper = document.querySelector('.question-wrapper');
+        const progress = document.querySelector('.progress');
+        
+        let currentQuestion = 0;
+        let answers = [];
+        let isTransitioning = false;
+
+        // Next Surprise Button
+        nextSurpriseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'page5.html';
+        });
+
+        // Mobile ke liye ALAG SE touch event handler
+        function handleOptionClick(value, questionCard, qNum) {
+            if (isTransitioning) return;
+            
+            // Store answer
+            answers[qNum] = value;
+            
+            // Visual feedback
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(20);
+            }
+            
+            // If not last question
+            if (currentQuestion < 4) {
+                // Disable current options
+                const currentRadios = questionCard.querySelectorAll('input[type="radio"]');
+                currentRadios.forEach(r => r.disabled = true);
+                
+                // Move to next question
+                transitionToNextQuestion();
+            }
+        }
+
+        // Add click/touch listeners to ALL labels
+        document.querySelectorAll('.option-label').forEach(label => {
+            // Mouse click for laptop
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                const radio = document.getElementById(this.htmlFor);
+                if (!radio) return;
+                
+                radio.checked = true;
+                
+                const questionCard = this.closest('.question-card');
+                const qNum = parseInt(questionCard.dataset.q) - 1;
+                
+                handleOptionClick(radio.value, questionCard, qNum);
+            });
+
+            // Touch for mobile
+            label.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const radio = document.getElementById(this.htmlFor);
+                if (!radio) return;
+                
+                radio.checked = true;
+                
+                // Visual feedback immediately
+                this.style.background = '#ff85b3';
+                this.style.transform = 'scale(0.98)';
+                
+                setTimeout(() => {
+                    this.style.background = '';
+                    this.style.transform = '';
+                }, 200);
+                
+                const questionCard = this.closest('.question-card');
+                const qNum = parseInt(questionCard.dataset.q) - 1;
+                
+                handleOptionClick(radio.value, questionCard, qNum);
+            }, { passive: false });
+        });
+
+        // Transition function
+        function transitionToNextQuestion() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            
+            questionCards[currentQuestion].classList.remove('active');
+            progressDots[currentQuestion].classList.add('completed');
+            
+            setTimeout(() => {
+                currentQuestion++;
+                
+                if (currentQuestion < 5) {
+                    questionCards[currentQuestion].classList.add('active');
+                    
+                    progressDots.forEach((dot, index) => {
+                        if (index === currentQuestion) {
+                            dot.classList.add('active');
+                        }
+                    });
+                    
+                    isTransitioning = false;
+                    
+                    if (currentQuestion === 4) {
+                        prepareLastQuestion();
+                    }
+                } else {
+                    // All questions done
+                    submitAnswers();
+                }
+            }, 500);
+        }
+
+        // Prepare last question
+        function prepareLastQuestion() {
+            const lastLabels = questionCards[4].querySelectorAll('.option-label');
+            
+            lastLabels.forEach(label => {
+                const handleLast = function(e) {
+                    e.preventDefault();
+                    const radio = document.getElementById(this.htmlFor);
+                    if (!radio) return;
+                    
+                    radio.checked = true;
+                    
+                    setTimeout(() => {
+                        submitAnswers();
+                    }, 500);
+                };
+                
+                label.removeEventListener('click', handleLast);
+                label.removeEventListener('touchstart', handleLast);
+                label.addEventListener('click', handleLast);
+                label.addEventListener('touchstart', handleLast, { passive: false });
+            });
+        }
+
+        // Submit answers
+        function submitAnswers() {
+            // Show final message
+            title.style.opacity = '0';
+            setTimeout(() => {
+                title.textContent = '✨ Thank You! ✨';
+                title.style.opacity = '1';
+            }, 300);
+            
+            wrapper.style.opacity = '0';
+            progress.style.opacity = '0';
+            
+            setTimeout(() => {
+                wrapper.style.display = 'none';
+                progress.style.display = 'none';
+                finalSection.style.display = 'block';
+            }, 500);
+        }
+
+        console.log('✅ Mobile click fixed!');
+    </script>
+</body>
+</html>
